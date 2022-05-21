@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
+
+	"github.com/Vesino/openMovieApi/internal/data"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,6 +18,19 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		http.NotFound(w, r)
 		return
 	}
+	movie := data.Movie{
+		ID:        id,
+		CreatedAt: time.Now(),
+		Title:     "Santo contra las momias",
+		Year:      1994,
+		Runtime:   102,
+		Genres:    []string{"drama", "romance", "war"},
+		Version:   1,
+	}
 
-	fmt.Fprintf(w, "show the details of movie %d\n", id)
+	err = app.writeJSON(w, http.StatusOK, movie, nil)
+	if err != nil {
+		app.logger.Printf(err.Error())
+		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
+	}
 }
