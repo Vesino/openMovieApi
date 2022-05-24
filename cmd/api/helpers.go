@@ -49,8 +49,10 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *application) readJson(w http.ResponseWriter, r *http.Request, dst interface{}) error {
+func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
+	// Decode the request body into the target destination.
 	err := json.NewDecoder(r.Body).Decode(dst)
+
 	if err != nil {
 		// If there is an error during decoding, start the triage...
 		var syntaxError *json.SyntaxError
@@ -58,11 +60,10 @@ func (app *application) readJson(w http.ResponseWriter, r *http.Request, dst int
 		var invalidUnmarshalError *json.InvalidUnmarshalError
 
 		switch {
-
 		// Use the errors.As() function to check whether the error has the type
 		// *json.SyntaxError. If it does, then return a plain-english error message
 		// which includes the location of the problem.
-		case errors.As(err, *syntaxError):
+		case errors.As(err, &syntaxError):
 			return fmt.Errorf("body contains badly-formed JSON (at character %d)", syntaxError.Offset)
 
 		// In some circumstances Decode() may also return an io.ErrUnexpectedEOF error
@@ -84,6 +85,11 @@ func (app *application) readJson(w http.ResponseWriter, r *http.Request, dst int
 		case errors.Is(err, io.EOF):
 			return errors.New("body must not be empty")
 
+		// A json.InvalidUnmarshalError error will be returned if we pass a non-nil
+		// pointer to Decode(). We catch this and panic, rather than returning an error
+		// to our handler. At the end of this chapter we'll talk about panicking
+		// versus returning errors, and discuss why it's an appropriate thing to do in
+		// this specific situation.
 		case errors.As(err, &invalidUnmarshalError):
 			panic(err)
 

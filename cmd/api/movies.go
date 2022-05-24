@@ -17,9 +17,10 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 		Genres  []string `json:genres`
 	}
 
-	err := app.readJson(w, r, &input)
+	err := app.readJSON(w, r, &input)
 	if err != nil {
-		app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+		app.badRequestResponse(w, r, err)
+		return
 	}
 
 	// Dump the contents of the input struct in a HTTP response.
