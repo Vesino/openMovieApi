@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  open-movie:
+    depends_on:
+      - postgres
+    build:
+      context: .
+    container_name: rest-server
+    hostname: rest-server
+    networks:
+      - openmovienet
+    ports:
+      - 80:8080
+    environment:
+      - GREENLIGHT_DB_DSN=postgres://greenlight:pa55word@localhost/greenlight?sslmode=disable
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: db
+    networks:
+      - openmovienet
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+
+
+volumes:
+  postgres:
+
+networks:
+  openmovienet:
