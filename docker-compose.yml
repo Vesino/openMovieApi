@@ -2,8 +2,6 @@ version: '3.8'
 
 services:
   open-movie:
-    depends_on:
-      - postgres
     build:
       context: .
     container_name: rest-server
@@ -18,16 +16,16 @@ services:
       restart_policy:
         condition: on-failure
 
-  postgres:
-    image: postgres
-    container_name: postgres
-    hostname: db
-    networks:
-      - openmovienet
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres:/var/lib/postgresql/data/
+  # postgres:
+  #   image: postgres
+  #   container_name: postgres
+  #   hostname: db
+  #   networks:
+  #     - openmovienet
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - postgres:/var/lib/postgresql/data/
 
 
 volumes:

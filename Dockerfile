@@ -6,12 +6,14 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
+
 RUN go mod download
 
 COPY *.go ./
+COPY . .
 
-RUN go build -o /docker-gs-ping
+RUN go build -o ./cmd/api
 
 EXPOSE 4000
 
-CMD [ "/rest-service" ]
+CMD [ "./cmd/api" ]
