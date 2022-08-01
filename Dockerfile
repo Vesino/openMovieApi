@@ -12,8 +12,8 @@ RUN go mod download
 COPY *.go ./
 COPY . .
 
-RUN go build -o ./cmd/api
+RUN go build ./cmd/api
 
 EXPOSE 4000
 
-CMD [ "./cmd/api" ]
+CMD [ "./api" ]
