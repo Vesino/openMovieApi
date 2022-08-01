@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: open-movie-db
+    hostname: db
+    networks:
+      openmovienet:
+    environment:
+      - PGUSER=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?database password not set}
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+  open-movie:
+    build:
+      context: .
+    depends_on:
+      - db
+    container_name: rest-server
+    hostname: rest-server
+    networks:
+      openmovienet:
+    ports:
+      - 4000:4000
+    environment:
+      - GREENLIGHT_DB_DSN=postgres://${USR}:${PASS}@db:5432/greenlight?sslmode=disable
+    deploy:
+      restart_policy:
+        condition: on-failure
+        
+
+volumes:
+  postgres:
+
+networks:
+  openmovienet:
