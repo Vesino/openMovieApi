@@ -31,20 +31,6 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-  migrate:
-    image: migrate/migrate
-    networks:
-      - openmovienet
-    depends_on:
-      - db
-    volumes:
-      - ./migrations:/migrations
-    command: ["-path", "/migrations", "-database",  "postgres://${USR}:${PASS}@db:5432/greenlight?sslmode=disable", "up"]
-    links: 
-      - db
-    deploy:
-      restart_policy:
-        condition: on-failure
 
 volumes:
   postgres:
