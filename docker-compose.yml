@@ -38,7 +38,7 @@ services:
     depends_on:
       - db
     volumes:
-      - .:/migrations
+      - ./migrations:/migrations
     command: ["-path", "/migrations", "-database",  "postgres://${USR}:${PASS}@db:5432/greenlight?sslmode=disable", "up"]
     links: 
       - db
